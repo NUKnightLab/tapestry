@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-wp_plugin_template
+Tapestry for Wordpress
 ==================
 
-A plugin template
-=======
-tapestry
-========
-
 A WordPress plugin for organizing posts into a narrative arc.
->>>>>>> aa42a9bdb2d815d4ada6a8ac0a18d2089683fea9
+
+=======
+Work in Progress...I've been experimenting with PHP and wordress, code is not cleaned up yet.
