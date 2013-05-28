@@ -93,7 +93,6 @@ if(class_exists('Tapestry2'))
 			    wp_register_script( 'custom_jquery', 'http://code.jquery.com/jquery-1.9.1.js');
    			    wp_register_script( 'custom_jquery_UI', 'http://code.jquery.com/ui/1.10.2/jquery-ui.js', array('custom_jquery'));
 
-
 			    wp_register_style( 'new_style', plugins_url('/jquery/css/smoothness/jquery-ui-1.10.2.custom.css', __FILE__), false, '1.9.1', 'all');
 			
 			}
@@ -111,7 +110,6 @@ if(class_exists('Tapestry2'))
 				wp_enqueue_script('jquery');
 				wp_enqueue_script('jquery-ui-core');
 				wp_enqueue_script('jquery-ui-sortable');
-			
 
 			}
 			/*------*/
@@ -195,7 +193,19 @@ if(class_exists('Tapestry2'))
 				</ul>
 
 
+
+			<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+			<!-- +++++++++++++++++++++++++++++++++++ TIMELINER +++++++++++++++++++++++++++++++++++ -->
+			<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+			<h1> THIS IS WHERE TIMELINER GOES </h1>
+			<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+			<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+			<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+
+
 			 <?php
+
 
 			}
 
@@ -288,6 +298,7 @@ if(class_exists('Tapestry2'))
 					      	endforeach;
 					    ?>
 					</select>
+
 					<br />
 
 					<label for="tapestry_summary"><?php _e( "Summary for post in stream.", 'example' ); ?></label>
@@ -319,7 +330,7 @@ if(class_exists('Tapestry2'))
 			<?php
 
 			stream_display();
-		
+
 			}
 			/*------*/
 

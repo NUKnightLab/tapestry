@@ -12,3 +12,17 @@ function displayDate1(){
 function displayDate(){
 	alert('hello!');
 }
+
+jQuery("#stream_dropdownbox").change(function() {
+  var stream = jQuery("#stream_dropdownbox option:selected").val();
+  var postid = jQuery("#post_ID").val();
+
+
+  jQuery.ajax({
+	url: "http://www.knightlab.dhrumilmehta.com/wp-content/plugins/tapestry2/al.php?postid=" + postid + "&stream=" + stream	
+  }).done(function( resp ) {
+	//console.log(resp);
+	jQuery("#abc_product_categories_sortable").html(resp);
+  });
+
+});
