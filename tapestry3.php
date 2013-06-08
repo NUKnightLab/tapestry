@@ -12,7 +12,7 @@ License: GPL2
 Copyright 2013  Dhrumil Mehta  (email : dhrumil.mehta@gmail.com)
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License, version 2, as 
+it under the terms of the GNU General Public License, version 2, as
 published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -40,14 +40,14 @@ if(!class_exists('Tapestry2'))
             require_once(sprintf("%s/settings.php", dirname(__FILE__)));
             $Tapestry2_Settings = new Tapestry2_Settings();
 
-            // Initialize Widget 
+            // Initialize Widget
 			require_once dirname( __FILE__ ) .'/tapestry-widget.php';
 
         	// Register custom post types
             require_once(sprintf("%s/post-types/living_story_post.php", dirname(__FILE__)));
             $Living_Story_Post = new Living_Story_Post();
 		} // END public function __construct
-	    
+
 		/**
 		 * Activate the plugin
 		 */
@@ -55,10 +55,10 @@ if(!class_exists('Tapestry2'))
 		{
 			// Do nothing
 		} // END public static function activate
-	
+
 		/**
 		 * Deactivate the plugin
-		 */		
+		 */
 		public static function deactivate()
 		{
 			// Do nothing
@@ -74,7 +74,7 @@ if(class_exists('Tapestry2'))
 
 	// instantiate the plugin class
 	$tapestry2 = new Tapestry2();
-	
+
     // Add a link to the settings page onto the plugin page
     if(isset($tapestry2))
     {
@@ -82,39 +82,24 @@ if(class_exists('Tapestry2'))
 			add_action( 'load-post.php', 'smashing_post_meta_boxes_setup' );
 			add_action( 'load-post-new.php', 'smashing_post_meta_boxes_setup' );
 
-
 			// register Foo_Widget widget
 			add_action( 'widgets_init', create_function( '', 'register_widget( "tapestry_Widget" );' ) );
-
 
 			// register jquery and style on initialization
 			add_action('init', 'register_script');
 			function register_script(){
-			    wp_register_script( 'custom_jquery', 'http://code.jquery.com/jquery-1.9.1.js');
-   			    wp_register_script( 'custom_jquery_UI', 'http://code.jquery.com/ui/1.10.2/jquery-ui.js', array('custom_jquery'));
-
-
 			    wp_register_style( 'new_style', plugins_url('/jquery/css/smoothness/jquery-ui-1.10.2.custom.css', __FILE__), false, '1.9.1', 'all');
-			
+			    wp_register_style('timeliner_colorbox_css', plugins_url('/timeliner/inc/colorbox.css',__FILE__));
+			    wp_register_style('timeliner_screen_css', plugins_url('/timeliner/css/screen.css',__FILE__));
 			}
-			 
+
 			// use the registered jquery and style above
 			add_action('init', 'enqueue_style');
 			function enqueue_style(){
-			   /* wp_enqueue_script('custom_jquery');
-			    wp_enqueue_script('custom_jquery_UI');	
-			    wp_enqueue_script(
-			        'sortable', // name your script so that you can attach other scripts and de-register, etc.
-			        plugins_url('/tapestry2/sortable.js'), // this is the location of your script file
-			        array('custom_jquery') // this array lists the scripts upon which your script depends
-			        );*/
 				wp_enqueue_script('jquery');
 				wp_enqueue_script('jquery-ui-core');
 				wp_enqueue_script('jquery-ui-sortable');
-			
-
 			}
-			/*------*/
 
 			/* Meta box setup function. */
 			function smashing_post_meta_boxes_setup() {
@@ -124,12 +109,10 @@ if(class_exists('Tapestry2'))
 
 				/* Save post meta on the 'save_post' hook. */
 				add_action( 'save_post', 'smashing_save_post_class_meta', 10, 2 );
-		
 
 			}
 
-			/*------*/
-				/* Create one or more meta boxes to be displayed on the post editor screen. */
+			/* Create one or more meta boxes to be displayed on the post editor screen. */
 			function smashing_add_post_meta_boxes() {
 
 				add_meta_box(
@@ -141,140 +124,46 @@ if(class_exists('Tapestry2'))
 					'default'					// Priority
 				);
 
-				/*add_meta_box(
-					'tapestry_stream_display',			// Unique ID
-					esc_html__( 'Tapestry Show Streams', 'example' ),		// Title
-					'stream_display',		// Callback function
-					'post',					// Admin page (or post type)
-					'normal',					// Context
-					'default'					// Priority
-				);*/
-
-			}
-
-			function stream_display (){  
-				?>
-
-				<h1> DISPLAY STREAM HERE! </h1>
-
-				<?php	wp_enqueue_style( 'new_style' ); ?>
-
-				<style>
-				  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-				  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
-				  #sortable li span { position: absolute; margin-left: -1.3em; }
-				</style>
-
-				<ul id="abc_product_categories_sortable" class="ui-sortable">
-					<?php 
-					$post_type = 'post';
-					$taxonomy = 'stream';
-
-					//Gets the stream of this post
-					$my_streams = wp_get_post_terms(get_the_ID(), 'stream', array("fields" => "names"));
-					$my_stream = $my_streams[0];
-
-					// Gets every "category" (term) in this taxonomy to get the respective posts
-				    $terms = get_terms( $taxonomy );
-
-				    foreach( $terms as $term ) : 
-
-					    if($my_stream == $term->name){
-					    $posts = new WP_Query( "taxonomy=$taxonomy&term=$term->slug&posts_per_page=-1" );
-			            echo "Stream Name: ";
-			            echo  $term->name ;
-					    while ( $posts->have_posts() ) :
-							$posts->the_post();
-							echo '<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>' . get_the_title() . '</li>';
-							endwhile;
-						}
-
-				    endforeach;
-					?>
-
-				</ul>
-
-
-			 <?php
-
 			}
 
 			/* Display the post meta box. */
-			function smashing_post_class_meta_box( $object, $box ) { ?>
-				<?php wp_nonce_field( basename( __FILE__ ), 'smashing_post_class_nonce' );
+			function smashing_post_class_meta_box( $object, $box ) {
+				wp_nonce_field( basename( __FILE__ ), 'smashing_post_class_nonce' );
+				wp_enqueue_script('stream', plugins_url('/tapestry2/stream.js'), array('jquery','jquery-ui-core'));
 
-				wp_enqueue_script(
-			        'dropdownbox', // name your script so that you can attach other scripts and de-register, etc.
-			        plugins_url('/tapestry2/dropdownbox.js'), // this is the location of your script file
-			        array('jquery','jquery-ui-core') // this array lists the scripts upon which your script depends
-			        );
+				echo "<p>";
+				echo "<label for ='stream_dropdownbox'>" . _e( "Select the Stream for this Post", 'default' ) . "</label>";
+				echo "<br />";
+				echo "<select id='stream_dropdownbox' name='stream_dropdownbox'>";
 
-				?>
+				//Get my stream name
+				$my_streams = wp_get_post_terms(get_the_ID(), 'stream', array("fields" => "names"));
+				$my_stream_name = $my_streams[0];
 
+				$post_type = 'post';
+				$taxonomy = 'stream';
 
-				<h1>My First JavaScript</h1>
-				<p id="demo">This is a paragraph.</p>
-				<button type="button" onclick="displayDate()">Display Date</button>
-				<hr><hr><hr>
+			    $streams = get_terms( $taxonomy, array( 'hide_empty' => 0 ) );
 
-				<p>
-					<label for ="stream_dropdownbox"> <?php _e( "Select the Stream for this Post", 'example' ); ?> </label>
-					<br />
-					<select id="stream_dropdownbox" name="stream_dropdownbox">
-						<?php //populate dropdown box
-				
-						//Get my stream name
-						$my_streams = wp_get_post_terms(get_the_ID(), 'stream', array("fields" => "names"));
-						$my_stream_name = $my_streams[0];
+		      	foreach( $streams as $stream ) :
+			      	if($stream->name == $my_stream_name)
+			      		$dropdownbox = "<option value = \"" . $stream->name ."\" selected> " . $stream->name . " </option>";
+			      	else
+			      		$dropdownbox = "<option value = \"" . $stream->name ."\" > " . $stream->name . " </option>";
+			      	echo $dropdownbox;
+		      	endforeach;
+			    
 
-
-						$post_type = 'post';
-						$taxonomy = 'stream';
-
-					    $streams = get_terms( $taxonomy, array( 'hide_empty' => 0 ) );
-
-					      foreach( $streams as $stream ) : 
-					      	if($stream->name == $my_stream_name) 
-					      		$dropdownbox = "<option value = \"" . $stream->name ."\" selected> " . $stream->name . " </option>";
-					      	else
-					      		$dropdownbox = "<option value = \"" . $stream->name ."\" > " . $stream->name . " </option>";
-					      	echo $dropdownbox;
-
-					      	endforeach;
-					    ?>
-					</select>
-					<br />
-
-					<label for="tapestry_summary"><?php _e( "Summary for post in stream.", 'example' ); ?></label>
-					<br />
-					<input class="widefat" type="text" name="tapestry_summary" id="tapestry_summary" value="<?php echo esc_attr( get_post_meta( $object->ID, 'tapestry_summary', true ) ); ?>" size="30" />
-					<br />
-
-					<label for="tapestry_headline"><?php _e( "Headline for post in stream.", 'example' ); ?></label>
-					<br />
-					<input class="widefat" type="text" name="tapestry_headline" id="tapestry_headline" value="<?php echo esc_attr( get_post_meta( $object->ID, 'tapestry_headline', true ) ); ?>" size="30" />
-					<br />
-
-					<label for="tapestry_altdate"><?php _e( "Alternative Date for post in stream.", 'example' ); ?></label>
-					<br />
-					<input class="widefat" type="datetime-local" name="tapestry_altdate" id="tapestry_altdate" value="<?php echo esc_attr( get_post_meta( $object->ID, 'tapestry_altdate') ); ?>" />
-					<br />
-
-					<label for="tapestry_priority"><?php _e( "Priority Value (1-5) for post in stream.", 'example' ); ?></label>
-					<br />
-					<input class="widefat" type="range" min="1" max="5" name="tapestry_priority" id="tapestry_priority" value="<?php echo esc_attr( get_post_meta( $object->ID, 'tapestry_priority', true ) ); ?>" size="30" />
-					<br />
-				</p>
-				<br/>
-
-				
+				echo "</select>";
+				echo "<br>";
 
 
+				wp_enqueue_style('timeliner_colorbox_css');
+				wp_enqueue_style('timeliner_screen_css');
+   			    wp_enqueue_script( 'timeliner_js',  plugins_url('/timeliner/js/timeliner.js',__FILE__), array('jquery'));
 
-			<?php
+		        echo "<ul id='streamdisplayer'></ul>";
 
-			stream_display();
-		
 			}
 			/*------*/
 
@@ -296,10 +185,11 @@ if(class_exists('Tapestry2'))
 					return $post_id;
 
 				/* Get the posted data and sanitize it for use as an HTML class. */
-				$new_meta_value1 = ( isset( $_POST['tapestry_summary'] ) ? sanitize_html_class( $_POST['tapestry_summary'] ) : '' );
-				$new_meta_value2 = ( isset( $_POST['tapestry_headline'] ) ? sanitize_html_class( $_POST['tapestry_headline'] ) : '' );
-				$new_meta_value3 = ( isset( $_POST['tapestry_altdate'] ) ? sanitize_html_class( $_POST['tapestry_altdate'] ) : '' );
-				$new_meta_value4 = ( isset( $_POST['tapestry_priority'] ) ? sanitize_html_class( $_POST['tapestry_priority'] ) : '' );
+				// caution, not santized
+				$new_meta_value1 = ( isset( $_POST['tapestry_summary'] ) ? $_POST['tapestry_summary'] : '' );
+				$new_meta_value2 = ( isset( $_POST['tapestry_headline'] ) ? $_POST['tapestry_headline'] : '' );
+				$new_meta_value3 = ( isset( $_POST['tapestry_altdate'] ) ? $_POST['tapestry_altdate'] : '' );
+				$new_meta_value4 = ( isset( $_POST['priority'] ) ? $_POST['priority'] : '' );
 
 				/*save the stream from the dropdown box selection*/
 				$new_stream = ( isset( $_POST['stream_dropdownbox'] ) ? sanitize_text_field( $_POST['stream_dropdownbox'] ) : '' );
@@ -359,61 +249,62 @@ if(class_exists('Tapestry2'))
 /*==================================================================================================================================*/
 
 
-        // Add the settings link to the plugins page
-        function plugin_settings_link($links)
-        { 
-            $settings_link = '<a href="options-general.php?page=tapestry2">Settings</a>'; 
-            array_unshift($links, $settings_link); 
-            return $links; 
-        }
-        $plugin = plugin_basename(__FILE__); 
-        add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
+	        // Add the settings link to the plugins page
+	        function plugin_settings_link($links)
+	        {
+	            $settings_link = '<a href="options-general.php?page=tapestry2">Settings</a>';
+	            array_unshift($links, $settings_link);
+	            return $links;
+	        }
+
+	        $plugin = plugin_basename(__FILE__);
+	        add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
 
 
 
-        /*STREAMS CUSTOM TAXONOMY ===========================================================================*/
+	        /*STREAMS CUSTOM TAXONOMY ===========================================================================*/
 
-		//hook into the init action and call create_book_taxonomies when it fires
-		add_action( 'init', 'create_stream_taxonomies', 0 );
+			//hook into the init action and call create_book_taxonomies when it fires
+			add_action( 'init', 'create_stream_taxonomies', 0 );
 
-		//create two taxonomies, genres and writers for the post type "book"
-		function create_stream_taxonomies() 
-		{
+			//create two taxonomies, genres and writers for the post type "book"
+			function create_stream_taxonomies()
+			{
 
-		  // Add new taxonomy, NOT hierarchical (like tags)
-		  $labels = array(
-		    'name'                         => _x( 'Streams', 'taxonomy general name' ),
-		    'singular_name'                => _x( 'Stream', 'taxonomy singular name' ),
-		    'search_items'                 => __( 'Search Streams' ),
-		    'popular_items'                => __( 'Popular Streams' ),
-		    'all_items'                    => __( 'All Streams' ),
-		    'parent_item'                  => null,
-		    'parent_item_colon'            => null,
-		    'edit_item'                    => __( 'Edit Stream' ), 
-		    'update_item'                  => __( 'Update Stream' ),
-		    'add_new_item'                 => __( 'Add New Stream' ),
-		    'new_item_name'                => __( 'New Stream Name' ),
-		    'separate_items_with_commas'   => __( 'Separate streams with commas' ),
-		    'add_or_remove_items'          => __( 'Add or remove streams' ),
-		    'choose_from_most_used'        => __( 'Choose from the most used streams' ),
-		    'not_found'                    => __( 'No streams found.' ),
-		    'menu_name'                    => __( 'Streams' )
-		  ); 
+			  // Add new taxonomy, NOT hierarchical (like tags)
+			  $labels = array(
+			    'name'                         => _x( 'Streams', 'taxonomy general name' ),
+			    'singular_name'                => _x( 'Stream', 'taxonomy singular name' ),
+			    'search_items'                 => __( 'Search Streams' ),
+			    'popular_items'                => __( 'Popular Streams' ),
+			    'all_items'                    => __( 'All Streams' ),
+			    'parent_item'                  => null,
+			    'parent_item_colon'            => null,
+			    'edit_item'                    => __( 'Edit Stream' ),
+			    'update_item'                  => __( 'Update Stream' ),
+			    'add_new_item'                 => __( 'Add New Stream' ),
+			    'new_item_name'                => __( 'New Stream Name' ),
+			    'separate_items_with_commas'   => __( 'Separate streams with commas' ),
+			    'add_or_remove_items'          => __( 'Add or remove streams' ),
+			    'choose_from_most_used'        => __( 'Choose from the most used streams' ),
+			    'not_found'                    => __( 'No streams found.' ),
+			    'menu_name'                    => __( 'Streams' )
+			  );
 
-		  $args = array(
-		    'hierarchical'            => false,
-		    'labels'                  => $labels,
-		    'show_ui'                 => true,
-		    'show_admin_column'       => true,
-		    'update_count_callback'   => '_update_post_term_count',
-		    'query_var'               => true,
-		    'rewrite'                 => array( 'slug' => 'writer' )
-		  );
+			  $args = array(
+			    'hierarchical'            => false,
+			    'labels'                  => $labels,
+			    'show_ui'                 => true,
+			    'show_admin_column'       => true,
+			    'update_count_callback'   => '_update_post_term_count',
+			    'query_var'               => true,
+			    'rewrite'                 => array( 'slug' => 'writer' )
+			  );
 
-		  register_taxonomy( 'stream', 'post', $args );
-		}
-		
-    }
+			  register_taxonomy( 'stream', 'post', $args );
+			}
+
+	}
 }
 
 ?>

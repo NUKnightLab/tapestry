@@ -1,16 +1,21 @@
 <?php
+	// For an extreme performance boost remove this line and replace all wordpress functions
+	// with simple database queries. Although this is against the Wordpress way of doing things,
+	// this line loads an entire instance of Wordpress each time al.php is accessed (essentially
+	// each time the select box is changed)
+
 	require( '../../../wp-load.php' );
-	
-	
+
+
 	$taxonomy = 'stream';
 
 	$my_stream = get_term_by("name", $_GET['stream'], $taxonomy);
 	$terms = get_terms( $taxonomy );
 
-	echo get_the_ID();
+	// echo get_the_ID();
 
 	$streamposts = array();
-	
+
 	foreach( $terms as $term ) :
 		if($my_stream->name == $term->name) {
 			$posts = new WP_Query( "taxonomy=$taxonomy&term=$term->slug&posts_per_page=-1" );
@@ -62,24 +67,28 @@
 
 	uasort($streamposts, 'by_altdate');
 
+	$response = array();
 
-foreach ($streamposts as $post_id) :
-        if ($my_post_id == $post_id){
-                echo '<strong>' . get_post($post_id)->post_title . "<br>";
-                echo $post_id . "<br>";
-                echo get_post_meta( $post_id, 'tapestry_altdate', true ) . '</strong>';}
-        else{
-                echo get_post($post_id)->post_title . "<br>";
-                echo $post_id . "<br>";
-                echo get_post_meta( $post_id, 'tapestry_altdate', true );}
-        echo "<br><br>";
+	foreach ($streamposts as $post_id) :
+            $temp0 = get_post($post_id)->post_title;
+            $temp1 = $post_id;
+            $temp2 = get_post_meta( $post_id, 'tapestry_altdate', true ); // date in weird datetime-local format
+            $temp3 = get_post_meta( $post_id, 'tapestry_summary', true );
+            $temp4 = get_post_meta( $post_id, 'tapestry_headline', true );
+            $temp5 = get_post_meta( $post_id, 'tapestry_priority', true );
+            $temp6 = get_post($post_id) -> post_date;
 
-endforeach;
+            $temp = array($temp0, $temp1, $temp2, $temp3, $temp4, $temp5, $temp6);
+            array_push($response, $temp);
 
+            /*
+            	this might be to prevent duplicate stories from being printed
+            	if you are in a certain post, and $streamposts also has that postID
+            	it will print that post twice
+            	        if ($my_post_id == $post_id){
+           	*/
 
+	endforeach;
 
-
-
-
-	echo json_encode($streamposts);
+	echo json_encode($response);
 ?>

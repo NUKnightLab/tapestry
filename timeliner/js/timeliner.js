@@ -3,6 +3,9 @@
 * @version		1.4
 * @copyright	Tarek Anandan (http://www.technotarek.com)
 */
+
+$ = jQuery;
+
 ;(function($) {
 
 	var settings;
@@ -13,7 +16,7 @@
 			startState: 'closed', // value: closed | open, default to closed; sets whether the timeline is initially collapsed or fully expanded
 			startOpen: '', // value: selector ID of single timelineEvent, default to empty; sets the minor event that you want to display open by default on page load
 			baseSpeed: 200, // value: numeric, default to 200; sets the base speed for animation of the event marker
-			speed: 4, // value: numeric, defalut to 4; a multiplier applied to the base speed that sets the speed at which an event's conents are displayed and hidden
+			speed: 1, // value: numeric, defalut to 4; a multiplier applied to the base speed that sets the speed at which an event's conents are displayed and hidden
 			fontOpen: '1.2em', // value: any valid CSS font-size value, defaults to 1em; sets the font size of an event after it is opened
 			fontClosed: '1em', // value: any valid CSS font-size value, defaults to 1em; sets the font size of an event after it is closed
 			expandAllText: '+ expand all', // value: string, sets the text of the expandAll selector after the timeline is fully collapsed
